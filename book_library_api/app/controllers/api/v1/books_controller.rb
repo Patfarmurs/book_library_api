@@ -3,47 +3,47 @@ module Api
     class BooksController < ApplicationController
       def index
         books = Book.order(:title)
-        render json: books, include: [:shelf]
-      end
-    
-      def search
-        books = Book.where("title ILIKE ? OR author ILIKE ? OR topic ILIKE ?", "%#{params[:query]}%", "%#{params[:query]}%", "%#{params[:query]}%")
         render json: books
       end
-    
+
       def show
         book = Book.find(params[:id])
-        render json: book, include: [:loans]
+        render json: book
       end
-    
+
       def create
         book = Book.new(book_params)
         if book.save
           render json: book, status: :created
         else
-          render json: { errors: book.errors.full_messages }, status: :unprocessable_entity
+          render json: book.errors, status: :unprocessable_entity
         end
       end
-    
-      def update
+
+      def check_out
         book = Book.find(params[:id])
-        if book.update(book_params)
-          render json: book
+        if book.available_quantity > 0
+          checkout = book.checkouts.create(user_id: params[:user_id], checkout_date: Date.today, returned: false)
+          render json: checkout, status: :created
         else
-          render json: { errors: book.errors.full_messages }, status: :unprocessable_entity
+          render json: { error: 'Book not available' }, status: :unprocessable_entity
         end
       end
-    
-      def destroy
-        book = Book.find(params[:id])
-        book.destroy
-        head :no_content
+
+      def check_in
+        checkout = Checkout.find_by(book_id: params[:id], user_id: params[:user_id], returned: false)
+        if checkout
+          checkout.update(returned: true, return_date: Date.today)
+          render json: checkout
+        else
+          render json: { error: 'Checkout record not found' }, status: :unprocessable_entity
+        end
       end
-    
+
       private
-    
+
       def book_params
-        params.require(:book).permit(:title, :author, :topic, :total_count, :shelf_id)
+        params.require(:book).permit(:title, :author, :topic, :quantity, :shelf_id)
       end
     end
   end
