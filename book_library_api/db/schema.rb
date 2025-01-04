@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_30_152757) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_02_152140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,31 +18,29 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_30_152757) do
     t.string "title"
     t.string "author"
     t.string "topic"
-    t.integer "total_count", default: 0
+    t.integer "quantity", default: 1
     t.bigint "shelf_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shelf_id"], name: "index_books_on_shelf_id"
   end
 
-  create_table "loans", force: :cascade do |t|
+  create_table "checkouts", force: :cascade do |t|
+    t.bigint "user_id"
     t.bigint "book_id"
-    t.string "user_name"
-    t.date "loaned_at"
-    t.date "returned_at"
+    t.boolean "returned", default: false
+    t.date "checkout_date"
+    t.date "return_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["book_id"], name: "index_loans_on_book_id"
-    t.index ["user_id"], name: "index_loans_on_user_id"
+    t.index ["book_id"], name: "index_checkouts_on_book_id"
+    t.index ["user_id"], name: "index_checkouts_on_user_id"
   end
 
   create_table "shelves", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_shelves_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -53,7 +51,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_30_152757) do
   end
 
   add_foreign_key "books", "shelves"
-  add_foreign_key "loans", "books"
-  add_foreign_key "loans", "users"
-  add_foreign_key "shelves", "users"
+  add_foreign_key "checkouts", "books"
+  add_foreign_key "checkouts", "users"
 end

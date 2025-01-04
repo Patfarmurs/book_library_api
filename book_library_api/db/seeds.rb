@@ -6,23 +6,14 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
-# Create a new shelf to associate with the book (if not already created)
 shelf = Shelf.create(name: "Scriptures")
+# Output: <Shelf id: 1, name: "Scripture", created_at: "...", updated_at: "...">
 
-# Create a new book and associate it with the shelf
-book = Book.create(
-  title: "The Book of Mormon",
-  author: "Joseph Smith",
-  topic: "Gospel",
-  total_count: 8,
-  shelf: shelf
-)
+book1 = Book.create(title: "Book of Mormon", author: "Joseph Smith", topic: "Gospel", quantity: 2, shelf: shelf)
+book2 = Book.create(title: "Pearl of Great Price", author: "Joseph Smith", topic: "Gospel", quantity: 3, shelf: shelf)
+# Output: <Book id: 1, title: "Dune", ...> and <Book id: 2, title: "Foundation", ...>
 
-book = Book.create(
-  title: "The Pearl of Great Price",
-  author: "Joseph Smith",
-  topic: "Gospel",
-  total_count: 5,
-  shelf: shelf
-)
+
+user = User.create(name: "Patrick Mukula", email: "patrickkeita80@yahoo.com")
+# Output: <User id: 1, name: "John Doe", email: "john.doe@example.com", ...>
 
