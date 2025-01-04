@@ -1,0 +1,49 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/books":
+    get:
+      summary: list books
+      tags:
+      - Books
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create book
+      tags:
+      - Books
+      parameters: []
+      responses:
+        '201':
+          description: created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                author:
+                  type: string
+                topic:
+                  type: string
+                quantity:
+                  type: integer
+                shelf_id:
+                  type: integer
+              required:
+              - title
+              - author
+              - topic
+              - quantity
+              - shelf_id
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
